@@ -1,0 +1,113 @@
+/*#cover_icon {
+	height: 14px;
+	color: #778899;
+}*/
+
+#head:hover {
+	color: #87CEFA;
+}
+
+#player {
+	position: absolute;;
+	top: 30%;
+	left: 30%;
+}
+#main {
+	background-color: #eeeeee;
+	width: 360px;
+	border: 2px solid #eeeeee;
+	border-radius: 5px;
+}
+
+#progress {
+	padding: 0px;
+	margin-bottom: 10px;
+	margin-top: 5px;
+	height: 10px;
+	max-width: 340px;
+	background-color: lightGray;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+#current {
+	padding: 0px;
+	text-align: right;
+}
+
+#duration {
+	padding: 0px;
+	text-align: left;
+}
+
+#cover {
+	margin-right: -3px;
+}
+
+#cover, #main {
+	display: inline-block;
+	vertical-align: top;
+}
+
+#buttons {
+	margin-bottom: 5px;
+	padding-left: 33px;
+	padding-right: auto;
+}
+
+#buttons button {
+	font-size: 80%;
+}
+
+#badge {
+	padding-left: 3px;
+	padding-right: 3px;
+	margin-left: 5px;
+}
+
+#volume {
+	margin: 13px 0px 10px 0px; 
+	height: 5px;
+	width: 85px;
+	background-color: LightGray;
+	padding: 0px;	
+}
+
+#volume_icon {
+	margin-top: 8px;
+	margin-left: 25px;
+}
+
+#playlist {
+	font-size: 80%;
+	margin-bottom: 0px;
+}
+
+#playlist a {
+	padding: 5px 10px 5px 10px;
+}
+
+#slide_button_container {
+	padding-right: 0px;
+	text-align: right;
+	margin-left: 10px;
+}
+
+#slide_btn {
+	margin-top: 5px;
+	font-size: 80%;
+}
+
+#cover_btn_container {
+	text-align: right;
+	padding-right: 0px;
+}
+
+#cover_btn_icon {
+	font-size: 80%;
+}
+
+#cover_btn {
+	margin-top: 5px;
+	font-size: 80%;
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>My Html5 miniPlayer</title> 
+	<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/MiniPlayer.css">
+	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+	</head>
+<body>
+	<div id="player">
+		<div id="cover"></div>
+		<div id="main">
+			<div class="progress" id="progress">
+				<div id="progress_bar" class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-2" id="current">0:00</div>
+				<div class="btn-group col-sm-8"  id="buttons">
+						<button type="button" class="btn btn-info btn-xs" id="prev">
+							prev <span class="glyphicon glyphicon-fast-backward"></span>
+						</button>
+						<button type="button" class="btn btn-info btn-xs" id="play">
+							<span class="glyphicon glyphicon-play"></span> play
+						</button>
+						<button type="button" class="btn btn-info btn-xs hidden" id="pause">
+							<span class="glyphicon glyphicon-pause"></span> pause
+						</button>
+						<button type="button" class="btn btn-info btn-xs" id="stop">
+							<span class="glyphicon glyphicon-stop"></span> stop
+						</button>
+
+						<button type="button" class="btn btn-info btn-xs" id="next">
+							<span class="glyphicon glyphicon-fast-forward"></span> next
+						</button>
+				</div>
+				<div class="col-sm-2" id="duration">0:00</div>
+			</div>
+			<div class="row" id="row3">
+				<div class="col-sm-3" id="cover_btn_container">
+					<button type="button" class="btn btn-info btn-xs" id="cover_btn">
+						 <span class="glyphicon glyphicon-chevron-right" id="cover_btn_icon"></span>  cover
+					</button>
+				</div>
+				<div id="volume_icon" class="glyphicon glyphicon-volume-up col-sm-1"></div>
+				<div class="progress col-sm-4" id="volume">
+					<div id="volume_bar" class="progress-bar progress-bar progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+				</div>
+				<div class="col-sm-3" id="slide_button_container">
+					<button type="button" class="btn btn-info btn-xs" id="slide_btn">playlist
+						<span class="badge" id="badge"></span>
+		        	</button>
+				</div>	
+			</div>
+			<div id="playlist" class="list-group"></div>	
+		</div>
+	</div>
+	<div id="dropbox"></div>	
+</body>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/MiniPlayer.js"></script>
+</html>
