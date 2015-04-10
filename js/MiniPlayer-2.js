@@ -4,9 +4,8 @@
 	// 	alert("Drag and drop some music into this page to start!");
 	// })
 	var curr_audio;
-	var curr_audioURL;
-	var playlist = document.getElementById('playlist');
-	var audioList = [];
+	var curr_audioValue;
+	var audioList = document.getElementsByTagName("audio");
 	var vol = 1;
 	var obj = [];
 	var player = document.getElementById('player');
@@ -26,12 +25,6 @@
 			$(player).css({'opacity': '0.1'});
 		}
 	};
-
-	//add audio node
-	var newNode = $('<audio></audio>');
-	$(newNode).attr('id', 'audio');
-	$('#player').append(newNode);
-
 	// make the player draggable
 	$(player).draggable({containment: "window"});
 
@@ -60,11 +53,13 @@
 	var newNode = $('<a></a>').text('黄丽玲 - 爱上你等于爱上寂寞(live)');
 	$(newNode).attr('href','#');
 	$(newNode).addClass('list-group-item'); 
-	$(newNode).attr('data-url','test_audio/黄丽玲 - 爱上你等于爱上寂寞(live).mp3');
+	$(newNode).attr('data-value',audioList.length);
 	$('#playlist').append(newNode)	
-	$('#audio').attr('src','test_audio/黄丽玲 - 爱上你等于爱上寂寞(live).mp3');
+	var newNode2 = $('<audio></audio>');
+	$(newNode2).attr('src','test_audio/黄丽玲 - 爱上你等于爱上寂寞(live).mp3');
+	$('#playlist').append(newNode2);
 	$('#next').removeClass('disabled');
-	$('#badge').html(playlist.childElementCount);
+	$('#badge').html(audioList.length);
 
 /*---------keep playlist in sessionStorage only works for Firefox-------------	
  	if(sessionStorage.getItem('playList')) {
@@ -74,18 +69,16 @@
 */
 //-------------click playlist to play------------------------------------
 	$('#playlist').click(function(event) {
-		curr_audioURL = event.target.getAttribute("data-url");
-		setActive(event.target);
+		curr_audioValue = parseInt(event.target.getAttribute("data-value"));
 		loadNewAudio();
 	});
 
 	$('#playlist').sortable();
 	$('#playlist').disableSelection();
-
 //-------------control buttons---------------------------------------------
 	$('#play').click(function() {
 		if(curr_audio === undefined) {
-			if(playlist.childElementCount == 0) {
+			if(audioList.length == 0) {
 				alert('Please drag some audio files into the page to add it into the playlist!');
 				return
 			}
@@ -113,11 +106,13 @@
 	});
 	
 	$("#next").click(function() {
-		nextToPlay();	
+		curr_audioValue++;
+		loadNewAudio();
 	});
 			
 	$("#prev").click(function() {
-		prevToPlay();	
+		curr_audioValue--;
+		loadNewAudio();
 	});	
 
 //-------------Skip by click Progress bar--------------------------------
@@ -153,9 +148,6 @@
 	$('#volume_icon').click(function() {
 		if (!vol) {
 			vol = vol_tmp;
-			if (curr_audio !== undefined) {
-				curr_audio.volume = vol;	
-			}	
 			var bar_width = [vol/1 * 100 + '%'];
 			$('#volume_bar').width(bar_width);
 			toggleVolumeIconTooltip();
@@ -190,18 +182,25 @@
 				for(var i=0; i<input.length; i++) {
 					var name = input[i].name;
 					var newNode = $('<a></a>').text(name);
-					var url = window.URL.createObjectURL(input[i]);
 					$(newNode).attr('href','#');
 					$(newNode).addClass('list-group-item'); 
-					$(newNode).attr('data-url',url);
-					$('#playlist').append(newNode);				
-					
+					$(newNode).attr('data-value',audioList.length);
+					$('#playlist').append(newNode);
+
+					//-------create new audio element-----------------
+					var url = window.URL.createObjectURL(input[i]);
+					var newNode2 = $('<audio></audio>');
+					$(newNode2).attr('src',url);
+					$('#playlist').append(newNode2);
+
+					$('#next').removeClass('disabled');
+
+					dropbox.hidden();
+					$('#badge').html(audioList.length);
+
+					//playList2JSON(name,url);
 				}
-				dropbox.hidden();
-				$('#badge').html(playlist.childElementCount);	
-				$('#next').removeClass('disabled');
-				//playList2JSON(name,url);
-			});
+				});
 
 	dropbox.box.addEventListener(
 			'dragover', 
@@ -230,7 +229,7 @@
 	$("#slide_btn").click(function() {
 		$('#playlist').slideToggle('fast');
 	});
-	$('#badge').html(playlist.childElementCount);
+	$('#badge').html(audioList.length);
 	
 //--------------helper functions------------------------------------
 	//set tooltip text
@@ -243,26 +242,26 @@
 		}	
 	}
 
-	// //disable Prev/Next button while hit the top/bottom of playlist
-	// function addBtnListener() {
-	// 	curr_audio.onplaying = function() {
-	// 		if (nextToPlay === false) {
-	// 			$("#next").addClass("disabled");
-	// 			console.log("Next Button Disabled");
-	// 		}
-	// 		else {
-	// 			$("#next").removeClass("disabled");
-	// 		}
+	//disable Prev/Next button while hit the top/bottom of playlist
+	function addBtnListener() {
+		curr_audio.onplaying = function() {
+			if (curr_audioValue+1 == audioList.length) {
+				$("#next").addClass("disabled");
+				console.log("Next Button Disabled");
+			}
+			else {
+				$("#next").removeClass("disabled");
+			}
 
-	// 		if (prevToPlay === false) {
-	// 			$("#prev").addClass("disabled");
-	// 			console.log("Prev Button Disabled");
-	// 		}
-	// 		else {
-	// 			$("#prev").removeClass("disabled");
-	// 		}
-	// 	};
-	// }
+			if (curr_audioValue == 0) {
+				$("#prev").addClass("disabled");
+				console.log("Prev Button Disabled");
+			}
+			else {
+				$("#prev").removeClass("disabled");
+			}
+		};
+	}
 
 	//time update
 	function addTimeUpdate() {
@@ -281,15 +280,15 @@
 		nextToPlay();
 		};
 	}
+	
+	function play2pause() {
+		$("#pause").removeClass("hidden");
+		$("#play").addClass("hidden");
+	}
 
 	function pause2play() {
 		$("#pause").addClass("hidden");
 		$("#play").removeClass("hidden");
-	}
-
-	function play2pause() {
-		$("#pause").removeClass("hidden");
-		$("#play").addClass("hidden");
 	}
 
 	function formatTime(seconds) {
@@ -300,46 +299,23 @@
 	}
 
 	function nextToPlay() {
-		var nextSib = document.getElementById('item-active').nextSibling;
-		if (nextSib === undefined || nextSib === null) {
-			nextSib = playlist.firstChild;
-		}
-		curr_audioURL = nextSib.getAttribute('data-url');
-		loadNewAudio();
-		setActive(nextSib);
-	}
-
-	function prevToPlay() {
-		var prevSib = document.getElementById('item-active').previousSibling;
-		if (prevSib === undefined || prevSib === null) {
-			prevSib = playlist.lastChild;
-		}
-		curr_audioURL = prevSib.getAttribute('data-url');
+		curr_audioValue = (curr_audioValue+1) % audioList.length;
 		loadNewAudio(); 
-		setActive(prevSib);
 	}
 
 	function loadNewAudio() {
-		//-------create new audio element-----------------	
-		if (curr_audio !== undefined) {
-			var tmp = curr_audio.getAttribute('src');
-
-			if (curr_audio.getAttribute('src') === curr_audioURL) {
-				curr_audio.play();
-				return;	
-			}
+		var new_audio = audioList[curr_audioValue];
+		if (curr_audio !== undefined && new_audio !== curr_audio) {
 			curr_audio.load();
 		}
-		
+
+		curr_audio = new_audio;
 		play2pause();
-		$('#audio').attr('src',curr_audioURL);	
-
-		curr_audio = $('audio')[0];
-
 
 		addTimeUpdate();
 		addEndListener();
-		// addBtnListener();
+		addBtnListener();
+
 		curr_audio.volume = vol;
 		console.log('Volume = ' + curr_audio.volume);
 		curr_audio.play();
@@ -347,21 +323,20 @@
 		console.log(curr_audio);
 		console.log(curr_audio.duration);
 		var time = formatTime(curr_audio.duration);
-		// $("#duration").html(time);
+		$("#duration").html(time);
 
-		console.log("Now Playing " + curr_audioURL);
-	}
+		console.log("Now Playing " + curr_audioValue + " of " + audioList.length + " Song in the Playlist");
 
-	function setActive(that) {
+		//switch playlist entries between active and non-active
 		if ($("#item-active") != null) {
 			$("#item-active").removeClass("active");
 			$("#item-active").removeAttr("id");
 		}
 
-		$(that).addClass("active");
-		$(that).attr("id","item-active");
+		var tmp = $(".list-group-item")[curr_audioValue];
+		$(tmp).addClass("active");
+		$(tmp).attr("id","item-active");
 	}
-
 
 	function playList2JSON(name, url) {
 		var tmp = {
@@ -389,7 +364,7 @@
 			var newNode = $('<a></a>').text(name);
 			$(newNode).attr('href','#');
 			$(newNode).addClass('list-group-item'); 
-			$(newNode).attr('data-url',i);
+			$(newNode).attr('data-value',i);
 			$('#playlist').append(newNode);
 
 			//-------create new audio element-----------------

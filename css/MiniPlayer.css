@@ -12,6 +12,7 @@
 	top: 30%;
 	left: 30%;
 }
+
 #main {
 	background-color: #eeeeee;
 	width: 360px;
@@ -79,7 +80,7 @@
 }
 
 #playlist {
-	font-size: 80%;
+	font-size: 80%;	
 	margin-bottom: 0px;
 }
 

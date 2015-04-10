@@ -20,23 +20,23 @@
 				<div class="col-sm-2" id="current">0:00</div>
 				<div class="btn-group col-sm-8"  id="buttons">
 						<button type="button" class="btn btn-info btn-xs" id="prev">
-							prev <span class="glyphicon glyphicon-fast-backward"></span>
+							Prev <span class="glyphicon glyphicon-fast-backward"></span>
 						</button>
 						<button type="button" class="btn btn-info btn-xs" id="play">
-							<span class="glyphicon glyphicon-play"></span> play
+							<span class="glyphicon glyphicon-play"></span> Play
 						</button>
 						<button type="button" class="btn btn-info btn-xs hidden" id="pause">
-							<span class="glyphicon glyphicon-pause"></span> pause
+							<span class="glyphicon glyphicon-pause"></span> Pause
 						</button>
 						<button type="button" class="btn btn-info btn-xs" id="stop">
-							<span class="glyphicon glyphicon-stop"></span> stop
+							<span class="glyphicon glyphicon-stop"></span> Stop
 						</button>
 
 						<button type="button" class="btn btn-info btn-xs" id="next">
-							<span class="glyphicon glyphicon-fast-forward"></span> next
+							<span class="glyphicon glyphicon-fast-forward"></span> Next 
 						</button>
 				</div>
-				<div class="col-sm-2" id="duration">0:00</div>
+				<div class="col-sm-2" id="duration"></div>
 			</div>
 			<div class="row" id="row3">
 				<div class="col-sm-3" id="cover_btn_container">
@@ -44,7 +44,7 @@
 						 <span class="glyphicon glyphicon-chevron-right" id="cover_btn_icon"></span>  cover
 					</button>
 				</div>
-				<div id="volume_icon" class="glyphicon glyphicon-volume-up col-sm-1"></div>
+				<div class="glyphicon glyphicon-volume-up col-sm-1" id="volume_icon"></div>
 				<div class="progress col-sm-4" id="volume">
 					<div id="volume_bar" class="progress-bar progress-bar progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
 				</div>
@@ -57,7 +57,6 @@
 			<div id="playlist" class="list-group"></div>	
 		</div>
 	</div>
-	<div id="dropbox"></div>	
 </body>
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
