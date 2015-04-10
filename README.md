@@ -8,12 +8,12 @@ Currently, it supports the following features:
     - Skip to next/Back to previous
     - Volume Control
       - click volume bar to change volume
-      - click volume icon to quick mute
+      - toggle mute/unmute by clicking the volume icon
     - Progress bar
     - time track
     - Click progree bar to skip within audio track
-    - Hide/show playlist
-    - Hide/show cover image
+    - toggle playlist by clicking the playlist button
+    - toggle cover image by clicking the cover button
     - loop playlist
     - drag and drop local audio files into the page to add it to the bottom of the playlist
       - can add multiple files by one drag&drop  
