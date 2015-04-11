@@ -3,10 +3,6 @@
 	color: #778899;
 }*/
 
-#head:hover {
-	color: #87CEFA;
-}
-
 #player {
 	position: absolute;;
 	top: 30%;
@@ -79,6 +75,9 @@
 	margin-left: 25px;
 }
 
+#row3 {
+	padding-bottom: 5px;
+}
 #playlist {
 	font-size: 80%;	
 	margin-bottom: 0px;
@@ -111,4 +110,13 @@
 #cover_btn {
 	margin-top: 5px;
 	font-size: 80%;
+}
+
+a>span {
+	float: right;
+	margin-left: 10px;
+}
+
+a>span:hover {
+	color: #5bc0de;
 }

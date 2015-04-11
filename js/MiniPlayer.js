@@ -3,13 +3,44 @@
 	// $(document).ready(function() {
 	// 	alert("Drag and drop some music into this page to start!");
 	// })
-	var curr_audio;
-	var curr_audioURL;
-	var playlist = document.getElementById('playlist');
-	var audioList = [];
 	var vol = 1;
-	var obj = [];
+	var playlist = document.getElementById('playlist');
 	var player = document.getElementById('player');
+	var obj = [];
+
+	var currAudio = {
+		file: null,
+		url: '',
+		filePlay: function() {
+			if(this.file === null) {
+				if(playlist.childElementCount == 0) {
+					alert('Please drag some audio files into the page to add it into the playlist!');
+					return
+				}
+				alert("Please select an audio from the playlist to play!");
+				return;
+			}
+			play2pause();
+			this.file.play();
+		},
+		filePause: function() {
+			pause2play();
+			this.file.pause();
+		},
+		fileStop: function() {
+			
+			pause2play();
+			this.file.load();
+			$("#current").html(formatTime(0));
+			$("#progress_bar").width('0%');		
+		},
+		fileNext: function() {
+			nextToPlay();
+		},
+		filePrev: function() {
+			prevToPlay();
+		}
+	}
 
 	var dropbox = {
 		box: $('html')[0],
@@ -41,92 +72,102 @@
 	$('#cover').css({'background': 'url(' + imgurl + ')', 
 		'background-repeat': 'no-repeat' , 
 		'background-size': 'cover', 
-		'height': '80px',
-		'width': '80px',
+		'height': '87px',
+		'width': '87px',
 		'background-position': 'center bottom',
 		'border': '2px solid #eeeeee'});
-	// $('#cover').position({
-	//  	of: $('#main'),
-	//  	my: "right top",
-	//  	at: "left top"
-	//  });
-	$('#cover_btn').click(function() {
+
+	$('#cover_btn').click(function(event) {
+		event.preventDefault;
 		$('#cover').toggleClass('hidden');
 		$('#cover_btn_icon').toggleClass('glyphicon-chevron-right');
 		$('#cover_btn_icon').toggleClass('glyphicon-chevron-left');
 	});
 
 	//intialize with one song in play list
-	var newNode = $('<a></a>').text('黄丽玲 - 爱上你等于爱上寂寞(live)');
+	var newNode = $('<a></a>').text('黄丽玲 - 爱上你等于爱上寂寞(live).mp3');
 	$(newNode).attr('href','#');
 	$(newNode).addClass('list-group-item'); 
 	$(newNode).attr('data-url','test_audio/黄丽玲 - 爱上你等于爱上寂寞(live).mp3');
-	$('#playlist').append(newNode)	
+	var newNode2 = $('<span></span>');
+	$(newNode2).addClass('glyphicon glyphicon-minus');
+	$(newNode).append(newNode2);	
+
+	$(playlist).append(newNode)	
 	$('#audio').attr('src','test_audio/黄丽玲 - 爱上你等于爱上寂寞(live).mp3');
 	$('#next').removeClass('disabled');
 	$('#badge').html(playlist.childElementCount);
 
-/*---------keep playlist in sessionStorage only works for Firefox-------------	
- 	if(sessionStorage.getItem('playList')) {
-		console.log('load playlist');
-		loadPlaylist();
-	}
-*/
-//-------------click playlist to play------------------------------------
-	$('#playlist').click(function(event) {
-		curr_audioURL = event.target.getAttribute("data-url");
-		setActive(event.target);
-		loadNewAudio();
+// //---------keep playlist in sessionStorage only works for Firefox-------------	
+//  	if(sessionStorage.getItem('playList')) {
+// 		console.log('load playlist');
+// 		loadPlaylist();
+// 	}
+
+//--------------------Playlist------------------------------------
+	//click playlist to play
+	$(playlist).click(function(event) {
+		if(event.target.hasAttribute('href')) {
+			currAudio.url = event.target.getAttribute("data-url");
+			setActive(event.target);
+			loadNewAudio();	
+		}
+		else {
+			//remove from playlit
+			var nodeToDelete = event.target.parentElement;
+			if(currAudio.file !== null) {
+				currAudio.fileStop();
+				currAudio.file = null;
+				playlist.removeChild(nodeToDelete);	
+				// nextToPlay();
+			}
+			else {
+				playlist.removeChild(nodeToDelete);		
+			}
+			$('#badge').html(playlist.childElementCount);
+		}
+
 	});
 
-	$('#playlist').sortable();
-	$('#playlist').disableSelection();
+	$(playlist).sortable();
+	$(playlist).disableSelection();
+
+	//toggle playlist
+	$("#slide_btn").click(function() {
+		$(playlist).slideToggle('fast');
+	});
+	$('#badge').html(playlist.childElementCount);
+	$('#slide_btn').tooltip();
+	$('#slide_btn').attr('title', 'drag audio files into this page to add them into the playlist');
 
 //-------------control buttons---------------------------------------------
 	$('#play').click(function() {
-		if(curr_audio === undefined) {
-			if(playlist.childElementCount == 0) {
-				alert('Please drag some audio files into the page to add it into the playlist!');
-				return
-			}
-			alert("Please select an audio from the playlist to play!");
-			return;
-		}
-		play2pause();
-		curr_audio.play();
+		currAudio.filePlay();
 	});
 
 	$('#pause').click(function() {
-		pause2play();
-		curr_audio.pause();
+		currAudio.filePause();
 	});
 
 	$('#stop').click(function() {
-		if(curr_audio === undefined) {
-			alert("Please select an audio from the playlist to play!");
-			return;
-		}
-		pause2play();
-		curr_audio.load();
-		$("#current").html(formatTime(0));
-		$("#progress_bar").width('0%');
+		currAudio.fileStop();
 	});
 	
 	$("#next").click(function() {
-		nextToPlay();	
+		currAudio.fileNext();	
 	});
 			
 	$("#prev").click(function() {
-		prevToPlay();	
+		currAudio.filePrev();	
 	});	
 
 //-------------Skip by click Progress bar--------------------------------
 	$('#progress').click(function(event) {
 		var x = event.pageX;
 		var offset = $(this).offset();
-		if (curr_audio !== undefined) {
-			curr_audio.currentTime = (x-offset.left)/$(this).width()*curr_audio.duration;
-			console.log("skip to " + curr_audio.currentTime);
+		if (currAudio.file !== null) {
+			currAudio.file.currentTime = (x-offset.left)/$(this).width()*currAudio.file.duration;
+			console.log("skip to " + currAudio.file.currentTime);
 		}
 	});
 
@@ -139,9 +180,9 @@
 		vol_tmp = vol;
 		var bar_width = [vol/1 * 100 + '%']
 		$('#volume_bar').width(bar_width);
-		if (curr_audio !== undefined) {
-			curr_audio.volume = vol;
-			console.log('Volume = ' + curr_audio.volume);
+		if (currAudio.file !== null) {
+			currAudio.file.volume = vol;
+			console.log('Volume = ' + currAudio.file.volume);
 		}
 		
 		if (vol !== 0) {
@@ -153,8 +194,8 @@
 	$('#volume_icon').click(function() {
 		if (!vol) {
 			vol = vol_tmp;
-			if (curr_audio !== undefined) {
-				curr_audio.volume = vol;	
+			if (currAudio.file !== null) {
+				currAudio.file.volume = vol;	
 			}	
 			var bar_width = [vol/1 * 100 + '%'];
 			$('#volume_bar').width(bar_width);
@@ -162,8 +203,8 @@
 		}
 		else {
 			vol = 0;
-			if (curr_audio !== undefined) {
-				curr_audio.volume = vol;
+			if (currAudio.file !== null) {
+				currAudio.file.volume = vol;
 			}
 			console.log('Muted');
 			$('#volume_bar').width("0%");
@@ -191,16 +232,23 @@
 					var name = input[i].name;
 					var newNode = $('<a></a>').text(name);
 					var url = window.URL.createObjectURL(input[i]);
+					console.log(input[i]);
 					$(newNode).attr('href','#');
 					$(newNode).addClass('list-group-item'); 
 					$(newNode).attr('data-url',url);
-					$('#playlist').append(newNode);				
-					
+					$(newNode).attr('data-type',input[i].type);
+
+					var newNode2 = $('<span></span>');
+					$(newNode2).addClass('glyphicon glyphicon-minus');
+					$(newNode).append(newNode2);	
+
+					$(playlist).append(newNode);				
 				}
 				dropbox.hidden();
 				$('#badge').html(playlist.childElementCount);	
 				$('#next').removeClass('disabled');
-				//playList2JSON(name,url);
+
+				// playList2JSON(name,url);	
 			});
 
 	dropbox.box.addEventListener(
@@ -226,11 +274,7 @@
 				dropbox.hidden();
 			});
 
-//---------toggle playlist--------------------------
-	$("#slide_btn").click(function() {
-		$('#playlist').slideToggle('fast');
-	});
-	$('#badge').html(playlist.childElementCount);
+
 	
 //--------------helper functions------------------------------------
 	//set tooltip text
@@ -245,7 +289,7 @@
 
 	// //disable Prev/Next button while hit the top/bottom of playlist
 	// function addBtnListener() {
-	// 	curr_audio.onplaying = function() {
+	// 	currAudio.file.onplaying = function() {
 	// 		if (nextToPlay === false) {
 	// 			$("#next").addClass("disabled");
 	// 			console.log("Next Button Disabled");
@@ -266,9 +310,9 @@
 
 	//time update
 	function addTimeUpdate() {
-		curr_audio.ontimeupdate = function(){
-			var cur = curr_audio.currentTime;
-			var bar_width = [cur/curr_audio.duration*100 + '%'];
+		currAudio.file.ontimeupdate = function(){
+			var cur = currAudio.file.currentTime;
+			var bar_width = [cur/currAudio.file.duration*100 + '%'];
 			$("#current").html(formatTime(cur));
 			$("#progress_bar").width(bar_width);
 		};
@@ -276,7 +320,7 @@
 
 	//automatic play the next track
 	function addEndListener() {
-		curr_audio.onended = function(){
+		currAudio.file.onended = function(){
 		pause2play();
 		nextToPlay();
 		};
@@ -300,56 +344,52 @@
 	}
 
 	function nextToPlay() {
-		var nextSib = document.getElementById('item-active').nextSibling;
+		var nextSib = document.getElementById('item-active').nextElementSibling;
 		if (nextSib === undefined || nextSib === null) {
 			nextSib = playlist.firstChild;
 		}
-		curr_audioURL = nextSib.getAttribute('data-url');
+		currAudio.url = nextSib.getAttribute('data-url');
 		loadNewAudio();
 		setActive(nextSib);
 	}
 
 	function prevToPlay() {
-		var prevSib = document.getElementById('item-active').previousSibling;
+		var prevSib = document.getElementById('item-active').previousElementSibling;
 		if (prevSib === undefined || prevSib === null) {
 			prevSib = playlist.lastChild;
 		}
-		curr_audioURL = prevSib.getAttribute('data-url');
+		currAudio.url = prevSib.getAttribute('data-url');
 		loadNewAudio(); 
 		setActive(prevSib);
 	}
 
 	function loadNewAudio() {
 		//-------create new audio element-----------------	
-		if (curr_audio !== undefined) {
-			var tmp = curr_audio.getAttribute('src');
+		if (currAudio.file !== null) {
+			var tmp = currAudio.file.getAttribute('src');
 
-			if (curr_audio.getAttribute('src') === curr_audioURL) {
-				curr_audio.play();
+			if (currAudio.file.getAttribute('src') === currAudio.url) {
+				currAudio.filePlay();
 				return;	
 			}
-			curr_audio.load();
+			currAudio.file.load();
 		}
 		
-		play2pause();
-		$('#audio').attr('src',curr_audioURL);	
+		$('#audio').attr('src',currAudio.url);	
+		$('#audio').attr('src',currAudio.url);
 
-		curr_audio = $('audio')[0];
-
+		currAudio.file = $('audio')[0];
+		console.log(currAudio.file);
 
 		addTimeUpdate();
 		addEndListener();
-		// addBtnListener();
-		curr_audio.volume = vol;
-		console.log('Volume = ' + curr_audio.volume);
-		curr_audio.play();
+		currAudio.file.volume = vol;
+		console.log('Volume = ' + currAudio.file.volume);
+		currAudio.filePlay();
 
-		console.log(curr_audio);
-		console.log(curr_audio.duration);
-		var time = formatTime(curr_audio.duration);
+		console.log(currAudio.file.duration);
+		var time = formatTime(currAudio.file.duration);
 		// $("#duration").html(time);
-
-		console.log("Now Playing " + curr_audioURL);
 	}
 
 	function setActive(that) {
@@ -386,17 +426,12 @@
 		//-------create new playlist entry----------------
 		for (var i=0;i<parse.length;i++) {
 			var name = parse[i].text;
+			var url = parse[i].audioUrl;
 			var newNode = $('<a></a>').text(name);
 			$(newNode).attr('href','#');
 			$(newNode).addClass('list-group-item'); 
-			$(newNode).attr('data-url',i);
-			$('#playlist').append(newNode);
-
-			//-------create new audio element-----------------
-			var url = parse[i].audioUrl;
-			var newNode2 = $('<audio></audio>');
-			$(newNode2).attr('src',url);
-			$('#playlist').append(newNode2);
+			$(newNode).attr('data-url',url);
+			$(playlist).append(newNode);
 		}
 	}
 
@@ -404,6 +439,5 @@
 		localStorage.clear();
 		sessionStorage.clear();
 	}
-
 
 }) ();
