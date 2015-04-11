@@ -9,22 +9,23 @@ Currently, it supports the following features:
     	- Skip to next/Back to previous
     	
     - Volume Control
-		- click volume bar to change volume
+		- click the volume bar to change volume
     	- toggle mute/unmute by clicking the volume icon
     	
     - Progress bar
     	- time track
-    	- Click progress bar to skip within audio track
+    	- Click the progress bar to skip within an audio track
  
     - Playlist:
-    	- toggle playlist by clicking the playlist button
-    	- sort play list simple by dragging the entries in it
-    	- loop playlist
-    	- drag and drop local audio files into the page to add it to the bottom of the playlist
+    	- toggle the playlist by clicking the playlist button
+    	- sort the playlist simply by dragging the entries in it
+    	- click the little "minus" sign to delete an entry in the playlist
+    	- playlist loop
+    	- drag and drop local audio files into the page to add them to the bottom of the playlist
     		- can add multiple files by one drag&drop 
    
-   	- toggle cover image by clicking the cover button
-    - player can be dragged to anywhere in the browser window.
+   	- toggle the cover image by clicking the cover button
+    - the player can be dragged to anywhere in the browser window.
 
 
 This player was built and tested using Chrome version 41(64-bit)
