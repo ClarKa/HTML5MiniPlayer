@@ -123,18 +123,18 @@ a>span:hover {
 	color: #5bc0de;
 }
 
-::-webkit-scrollbar
+#playlist::-webkit-scrollbar
 {
 	width: 10px;	
     height: 12px; /* for horizontal scrollbars */
 }
 
-::-webkit-scrollbar-track
+#playlist::-webkit-scrollbar-track
 {
     background: rgba(0, 0, 0, 0.1);
 }
 
-::-webkit-scrollbar-thumb
+#playlist::-webkit-scrollbar-thumb
 {
     background: #5bc0ff;
     border-radius: 8px;
