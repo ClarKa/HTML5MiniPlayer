@@ -28,7 +28,6 @@
 			this.file.pause();
 		},
 		fileStop: function() {
-			
 			pause2play();
 			this.file.load();
 			$("#current").html(formatTime(0));
@@ -44,11 +43,12 @@
 
 	var dropbox = {
 		box: $('html')[0],
-		hidden: function() {
+		hides: function() {
 			$(this.box).zIndex(-1);
 			$(player).zIndex(1);
+			$('#dropbox_text').remove()
 			$(this.box).removeAttr('style');
-			$(player).css({'opacity': '1'});
+			$(player).css({'opacity': '1.0'});
 		},
 		shows: function() {
 			$(this.box).zIndex(1);
@@ -244,7 +244,7 @@
 
 					$(playlist).append(newNode);				
 				}
-				dropbox.hidden();
+				dropbox.hides();
 				$('#badge').html(playlist.childElementCount);	
 				$('#next').removeClass('disabled');
 
@@ -264,6 +264,13 @@
 			function(event) {
 				event.stopPropagation();
 				event.preventDefault();
+
+				//----add dropbox text
+				var newNode = $('<h1></h1>');
+				// $(newNode).text('Drop it!') ;
+				$(newNode).attr('id', 'dropbox_text');
+				$(newNode).css({'display': 'flex'})
+				$(dropbox.box).append(newNode);
 			});
 
 	dropbox.box.addEventListener(
@@ -271,7 +278,7 @@
 			function(event) {
 				event.stopPropagation();
 				event.preventDefault();
-				dropbox.hidden();
+				dropbox.hides();
 			});
 
 
